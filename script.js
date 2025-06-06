@@ -17,7 +17,8 @@ async function makeCallout(accessCode) {
 
   try {
     const response = await fetch(
-      "https://automatic-fishstick-96vgr655pxjcpj6q-8080.app.github.dev/?code=" + accessCode,
+      // "https://automatic-fishstick-96vgr655pxjcpj6q-8080.app.github.dev/?code=" +
+      "https://salesforce-extension.onrender.com/?code=" + accessCode,
       options
     );
     const d = await response.json();
