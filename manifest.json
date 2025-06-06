@@ -9,7 +9,11 @@
     "default_title": "Salesforce Extension"
   },
   "permissions": ["tabs"],
-  "host_permissions": ["https://*.app.github.dev/*", "http://localhost:8080/*"],
+  "host_permissions": [
+    "https://*.app.github.dev/*",
+    "http://localhost:8080/*",
+    "https://salesforce-extension.onrender.com/*"
+  ],
   "web_accessible_resources": [
     {
       "resources": ["index.html", "script.js"],
