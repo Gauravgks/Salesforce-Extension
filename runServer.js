@@ -1,34 +1,24 @@
-var http = require("http");
-var fetch = require("node-fetch");
-
-console.log("running server");
+const http = require("http");
+const fetch = require("node-fetch");
 
 http
   .createServer(async function (req, res) {
-    if (req.method == "POST") {
-      console.log("POST req");
-      console.log(req.url);
-      //console.log(req)
-
-      if (req.url.includes("?code=")) {
-        try {
-          const respo = await getUserDetails(req.url.replace("/?code=", ""));
-          console.log("respo", respo);
-          res.writeHead(200, {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin":
-              "chrome-extension://aejkjadepamoajebeodmcpadkaclaaoo/index.html",
-          });
-          res.end(JSON.stringify(respo));
-        } catch (err) {
-          console.log("err", err);
-          res.writeHead(300, {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin":
-              "chrome-extension://aejkjadepamoajebeodmcpadkaclaaoo/index.html",
-          });
-          res.end(JSON.stringify({ err: err }));
-        }
+    if (req.method === "POST" && req.url.includes("?code=")) {
+      try {
+        const respo = await getUserDetails(req.url.replace("/?code=", ""));
+        res.writeHead(200, {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin":
+            "chrome-extension://aejkjadepamoajebeodmcpadkaclaaoo/index.html",
+        });
+        res.end(JSON.stringify(respo));
+      } catch (err) {
+        res.writeHead(300, {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin":
+            "chrome-extension://aejkjadepamoajebeodmcpadkaclaaoo/index.html",
+        });
+        res.end(JSON.stringify({ err }));
       }
     } else {
       res.writeHead(200, { "Content-Type": "text/html" });
@@ -37,13 +27,31 @@ http
   })
   .listen(8080);
 
-async function getUserDetails(authCode) {
-  console.log("authCode", authCode);
-  console.log("before request");
+async function getOrgLimits(instanceUrl, accessToken) {
+  try {
+    const limitsUrl = `${instanceUrl}/services/data/v58.0/limits`;
+    const limitsResponse = await fetch(limitsUrl, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Accept: "application/json",
+      },
+    });
 
+    if (!limitsResponse.ok) {
+      return null;
+    }
+
+    return await limitsResponse.json();
+  } catch (error) {
+    return null;
+  }
+}
+
+async function getUserDetails(authCode) {
   try {
     const response = await fetch(
-      "http://login.salesforce.com/services/oauth2/token?grant_type=authorization_code&client_id=3MVG9dAEux2v1sLs27gH_PVBwCfYRfm4zw5mXYTHUReEg0YcapgT3qud6sbeTyydSAjHvh4ri.5uTaM2v7RUM&redirect_uri=chrome-extension://aejkjadepamoajebeodmcpadkaclaaoo/index.html&code=" +
+      "https://login.salesforce.com/services/oauth2/token?grant_type=authorization_code&client_id=3MVG9dAEux2v1sLs27gH_PVBwCfYRfm4zw5mXYTHUReEg0YcapgT3qud6sbeTyydSAjHvh4ri.5uTaM2v7RUM&redirect_uri=chrome-extension://aejkjadepamoajebeodmcpadkaclaaoo/index.html&code=" +
         authCode,
       {
         method: "POST",
@@ -53,11 +61,9 @@ async function getUserDetails(authCode) {
       }
     );
     const json = await response.json();
-    console.log("in then");
 
     if (json.access_token) {
       try {
-        // Get user info using the access token
         const userInfoResponse = await fetch(
           json.instance_url + "/services/oauth2/userinfo",
           {
@@ -68,21 +74,27 @@ async function getUserDetails(authCode) {
           }
         );
         const userInfo = await userInfoResponse.json();
+        const orgLimits = await getOrgLimits(
+          json.instance_url,
+          json.access_token
+        );
 
-        // Combine the auth response with user info
         return {
           ...json,
           userInfo,
+          orgLimits: orgLimits || {},
         };
       } catch (error) {
-        console.error("Error fetching user info:", error);
-        throw error;
+        return {
+          ...json,
+          userInfo: null,
+          orgLimits: {},
+        };
       }
     } else {
-      throw json.error;
+      throw json.error || "No access token received";
     }
   } catch (err) {
-    console.error(err);
     throw err;
   }
 }
