@@ -1,55 +1,193 @@
+.section {
+  margin: 20px;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
 .user-info {
-    margin: 20px;
-    padding: 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f9f9f9;
+  margin: 20px;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
 }
 
 .user-info p {
-    margin: 5px 0;
+  margin: 5px 0;
 }
 
-.profile-section.slds-media {
-    gap: 20px;
+.profile-section {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
 }
 
 .profile-picture {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #0070d2;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #0070d2;
 }
 
 .user-details {
-    flex: 1;
+  flex: 1;
+}
+
+h1 {
+  color: #16325c;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+h2 {
+  color: #16325c;
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+#orgLimits table {
+  width: 100%;
+  margin-top: 10px;
+  border-collapse: collapse;
+}
+
+#orgLimits th {
+  background-color: #f3f3f3;
+  padding: 8px;
+  text-align: left;
+  font-weight: bold;
+}
+
+#orgLimits td {
+  padding: 8px;
+  border-bottom: 1px solid #d8dde6;
+}
+
+#orgLimits tr:hover {
+  background-color: #f8f9fb;
 }
 
 .slds-hide {
-    display: none;
+  display: none;
 }
 
 #userInfo {
-    margin-bottom: 30px;
-}
-
-.section {
-    margin: 20px 0;
-    padding: 15px;
-    border: 1px solid #eee;
-    border-radius: 5px;
+  margin-bottom: 30px;
 }
 
 button {
-    padding: 8px 16px;
-    background-color: #0070d2;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+  padding: 8px 16px;
+  background-color: #0070d2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 button:hover {
-    background-color: #005fb2;
+  background-color: #005fb2;
+}
+
+.org-limits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+  padding: 16px;
+  margin: 16px;
+  background: #f8f8f8;
+}
+
+.limit-item {
+  position: relative;
+  background: white;
+  border: 1px solid #e5e5e5;
+  border-radius: 4px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 160px;
+}
+
+.limit-title {
+  font-size: 13px;
+  color: #2e2e2e;
+  margin-bottom: 16px;
+  font-weight: 600;
+  line-height: 1.3;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+}
+
+/* Remove gauge, only show percentage value */
+.limit-percentage {
+  font-size: 32px;
+  font-weight: bold;
+  color: #2e2e2e;
+  margin: 16px 0 16px 0;
+  text-align: center;
+}
+
+.limit-value {
+  width: 100%;
+  margin-top: auto;
+  font-size: 12px;
+  color: #666;
+  display: grid;
+  gap: 8px;
+}
+
+.limit-value-row {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  align-items: center;
+  text-align: left;
+}
+
+.limit-value-label {
+  color: #666;
+  font-weight: normal;
+}
+
+.limit-value-number {
+  color: #2e2e2e;
+  font-weight: 500;
+  text-align: right;
+  padding-right: 16px;
+}
+
+.error-message {
+  margin: 20px;
+  padding: 15px;
+  border: 1px solid #c23934;
+  border-radius: 4px;
+  background-color: #fafaf9;
+  text-align: center;
+}
+
+.error-message h3 {
+  color: #2e2e2e;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.error-message p {
+  color: #666;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+/* Remove all gauge-related styles */
+.limit-gauge,
+.limit-gauge::before,
+.limit-gauge-fill,
+.limit-gauge-fill::before {
+  display: none !important;
 }
